@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useFontLoader } from '../hooks/useFontLoader';
 import FontDisplay from '../components/FontDisplay';
+import ShareSuccessModal from '../components/ShareSuccessModal';
 
 export default function AlignmentCheckPage() {
   const location = useLocation();
@@ -17,7 +18,7 @@ export default function AlignmentCheckPage() {
   const [overflowHidden, setOverflowHidden] = useState(true);
   const [showCenterLine, setShowCenterLine] = useState(true);
   const [showBackground, setShowBackground] = useState(false);
-  const [copySuccess, setCopySuccess] = useState('');
+  const [copySuccess, setCopySuccess] = useState(''); // eslint-disable-line no-unused-vars
 
   const handleRenderFont = useCallback(() => {
     if (!fontFamily || !fontUrl) return;
@@ -49,7 +50,7 @@ export default function AlignmentCheckPage() {
         const url = new URL(fontUrl);
         const family = url.searchParams.get('family');
         if (family) setFontFamily(family.split(':')[0]);
-      } catch (e) { /* Ignore */ }
+      } catch { /* Ignore */ }
     }
   }, [fontUrl]);
 
@@ -66,8 +67,7 @@ export default function AlignmentCheckPage() {
     });
     const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     navigator.clipboard.writeText(shareUrl).then(() => {
-      setCopySuccess('Copied!');
-      setTimeout(() => setCopySuccess(''), 2000);
+      setCopySuccess('URL copied. Share this URL with developers or designers.');
     });
   };
 
@@ -103,7 +103,7 @@ export default function AlignmentCheckPage() {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Font Size: {fontSize}px</label>
-                  <input type="range" min="12" max="100" value={fontSize} onChange={(e) => setFontSize(e.target.value)} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+                  <input type="range" min="12" max="100" value={fontSize} onChange={(e) => setFontSize(e.target.value)} className="w-full h-2 bg-gray-400 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">View Mode</label>
@@ -111,7 +111,7 @@ export default function AlignmentCheckPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Line Height: {lineHeight}</label>
-                <input type="range" min="1" max="3" step="0.1" value={lineHeight} onChange={(e) => setLineHeight(e.target.value)} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+                <input type="range" min="1" max="3" step="0.1" value={lineHeight} onChange={(e) => setLineHeight(e.target.value)} className="w-full h-2 bg-gray-400 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
               </div>
               <div className="flex items-center"><input id="overflow-hidden" type="checkbox" checked={overflowHidden} onChange={(e) => setOverflowHidden(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600" /><label htmlFor="overflow-hidden" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Clip Overflow</label></div>
               <div className="flex items-center"><input id="show-center-line" type="checkbox" checked={showCenterLine} onChange={(e) => setShowCenterLine(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600" /><label htmlFor="show-center-line" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">Show Center Line</label></div>
@@ -122,14 +122,14 @@ export default function AlignmentCheckPage() {
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
             <button onClick={handleRenderFont} disabled={!fontUrl || !fontFamily || isLoading} className="w-full sm:col-span-2 bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">{isLoading ? 'Loading Font...' : 'Render Font'}</button>
             <button onClick={setSample} className="w-full bg-gray-300 text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-400 transition-colors dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Try Sample</button>
-            <button onClick={handleShare} className="w-full bg-green-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-green-600 transition-colors">Share</button>
-            {copySuccess && <span className="text-sm text-green-600 sm:col-span-2 text-center">{copySuccess}</span>}
+            <button onClick={handleShare} disabled={!activeFontFamily} className="w-full bg-green-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-green-600 transition-colors disabled:bg-gray-400">Share</button>
           </div>
       </div>
 
       {error && <div className="mt-8 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-300" role="alert"><p>{error}</p></div>}
 
       <FontDisplay fontFamily={activeFontFamily} sampleText={sampleText} fontSize={fontSize} displayMode={displayMode} lineHeight={lineHeight} overflowHidden={overflowHidden} showCenterLine={showCenterLine} showBackground={showBackground} />
-    </>
+      <ShareSuccessModal message={copySuccess} onClose={() => setCopySuccess('')} />
+      </>
   );
 }

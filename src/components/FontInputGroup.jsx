@@ -13,7 +13,7 @@ export default function FontInputGroup({ title, fontUrl, onFontUrlChange, fontFa
         </div>
         <div>
           <label htmlFor={`${title}-font-size`} className="block text-sm font-medium text-gray-700 mb-1">Font Size: {fontSize}px</label>
-          <input id={`${title}-font-size`} type="range" min="12" max="100" value={fontSize} onChange={onFontSizeChange} className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer" />
+          <input id={`${title}-font-size`} type="range" min="12" max="100" value={fontSize} onChange={onFontSizeChange} className="w-full h-2 bg-gray-400 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
         </div>
       </div>
     </fieldset>
