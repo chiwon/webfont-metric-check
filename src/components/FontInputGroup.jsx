@@ -1,11 +1,42 @@
-export default function FontInputGroup({ title, fontUrl, onFontUrlChange, fontFamily, onFontFamilyChange, fontSize, onFontSizeChange }) {
+export default function FontInputGroup({ title, fontUrl, onFontUrlChange, fontFamily, onFontFamilyChange, fontSize, onFontSizeChange, isImportUrlInput }) {
+  const handleFontUrlChange = (e) => {
+    let value = e.target.value;
+    // Remove leading/trailing single or double quotes
+    if (value.startsWith("'") && value.endsWith("'")) {
+      value = value.slice(1, -1);
+    } else if (value.startsWith("\"") && value.endsWith("\"")) {
+      value = value.slice(1, -1);
+    }
+    onFontUrlChange(value);
+  };
+
   return (
     <fieldset className="border rounded-lg p-4">
       <legend className="text-lg font-semibold text-gray-800 px-2">{title}</legend>
       <div className="grid grid-cols-1 gap-4">
         <div>
           <label htmlFor={`${title}-font-url`} className="block text-sm font-medium text-gray-700 mb-1">Font URL</label>
-          <input id={`${title}-font-url`} type="text" value={fontUrl} onChange={onFontUrlChange} placeholder="e.g., Google Fonts URL" className="w-full p-3 border border-gray-300 rounded-md" />
+          {isImportUrlInput ? (
+            <div className="flex items-center">
+              <span className="text-gray-600 dark:text-gray-400 mr-1">@import url(</span>
+              <input
+                id={`${title}-font-url`}
+                type="text"
+                value={fontUrl}
+                onChange={handleFontUrlChange}
+                className="w-full p-3 border border-gray-300 rounded-md"
+              />
+              <span className="text-gray-600 dark:text-gray-400 ml-1">)</span>
+            </div>
+          ) : (
+            <input
+              id={`${title}-font-url`}
+              type="text"
+              value={fontUrl}
+              onChange={handleFontUrlChange}
+              className="w-full p-3 border border-gray-300 rounded-md"
+            />
+          )}
         </div>
         <div>
           <label htmlFor={`${title}-font-family`} className="block text-sm font-medium text-gray-700 mb-1">Font Family Name</label>

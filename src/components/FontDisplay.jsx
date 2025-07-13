@@ -15,7 +15,7 @@ export default function FontDisplay({ fontFamily, sampleText, fontSize, displayM
   };
 
   return (
-    <div className="mt-8 bg-white p-6 rounded-lg shadow-lg dark:bg-gray-900 dark:border-gray-700">
+    <div className="mt-8 bg-white p-6 rounded-lg shadow-lg dark:bg-gray-900 dark:border-gray-700 overflow-hidden">
       <h2 className="text-2xl font-bold mb-4 dark:text-gray-100">{fontFamily}</h2>
       <div className="grid grid-cols-1 gap-y-6">
         {weights.map(weight => (
